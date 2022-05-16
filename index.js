@@ -99,7 +99,7 @@
 
 
 
-
+    // istrauks komentaro objekta pagal komentaro ID ir prides dar user duomenis; nepakeiciant originaliu duomenu objektu ir masyvu
     app.get('/comments/:id', (request, response) => {
         const comment = comments.find(comment => comment.commentId === Number(request.params.id))
 
