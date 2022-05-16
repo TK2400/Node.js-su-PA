@@ -1,0 +1,24 @@
+{
+  "name": "node.js-su-pa",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TK2400/Node.js-su-PA.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TK2400/Node.js-su-PA/issues"
+  },
+  "homepage": "https://github.com/TK2400/Node.js-su-PA#readme",
+  "description": ""
+}
