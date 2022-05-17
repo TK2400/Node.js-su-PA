@@ -66,10 +66,6 @@
 
     ]
 
-    console.log(comments[1].userId + comments[1].text)
-
-
-
 
     app.listen(3000, () => {
         console.log(`Serveris paleistas. Laukia užklausų`);
@@ -86,26 +82,26 @@
     })
 
     // istrauks objekta su  useriu duomenmis ir jo parasytus komentarus masyve tame objekte
-    app.get('/users/:Id', (req, resp) => {
-        const paramsId = Number(req.params.Id)
-        const userObj = users.find(user => user.id === paramsId)
+    // Tomo atkartotas sprendimas neziurejus
+    app.get('/users/:id', (req, resp) => {
+        const userId = Number(req.params.id)
+        const userToFind = users.find(user => user.id === userId)
 
-        const userComments = comments.filter(comment => comment.userId === paramsId)
-        const userWithComments = {...userObj, comments: userComments }
+        const userComments = comments.filter(comment => comment.userId === userId)
 
-        resp.json(userWithComments)
+        resp.send({...userToFind, comments: userComments })
+
 
     })
 
 
 
-    // istrauks komentaro objekta pagal komentaro ID ir prides dar user duomenis; nepakeiciant originaliu duomenu objektu ir masyvu
+    // istrauks komentaro objekta pagal komentaro ID ir prides dar user duomenis;
+    // nepakeiciant originaliu duomenu objektu ir masyvu
+    // Tomo atkartotas sprendimas issiaikinus koda
     app.get('/comments/:id', (request, response) => {
+
         const comment = comments.find(comment => comment.commentId === Number(request.params.id))
-
         const userData = users.find(user => user.id === comment.userId)
-        const commentData = {...comment, username: `${userData.name} ${userData.lastName}`, email: userData.email }
-
-        response.json(commentData)
-
+        response.send({...comment, wroteByUser: `${userData.name} ${userData.lastName}`, email: userData.email })
     })
