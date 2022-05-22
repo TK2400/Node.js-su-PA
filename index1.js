@@ -5,7 +5,7 @@ const port = 3000
 app.use(express.json())
 
 
-const users = [{
+let users = [{
     id: 1,
     name: "John",
     lastName: "Den",
@@ -123,6 +123,13 @@ app.put('/user/:id', (req, res) => {
     } else 
     { res.send('could not find the user') }
 })
+
+// DELETE metodui reikia, kad users taptu LET vietoj const
+app.delete('/user/:id', (req, res) => {
+    users = users.filter(user => user.id !== Number(req.params.id));
+    res.send(users)
+    })
+
 
 app.listen(port, () => {
     console.log(`Serveris paleistas su node. Laukia užklausų`);
