@@ -127,6 +127,7 @@ app.put('/user/:id', (req, res) => {
 // DELETE metodui reikia, kad users taptu LET vietoj const
 app.delete('/user/:id', (req, res) => {
     users = users.filter(user => user.id !== Number(req.params.id));
+    // cia filter funkcija veikia taip, kad palik tik tuos, kurie nelygu tam dinaminiam numeriui
     res.send(users)
     })
 
