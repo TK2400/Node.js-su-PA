@@ -76,9 +76,7 @@ app.get('/user/:id', (req, res) => {
     }
 })
 
-app.listen(port, () => {
-    console.log(`Serveris paleistas su node. Laukia užklausų`);
-});
+
 
 
 app.post('/users', (req, res) => {
@@ -109,4 +107,23 @@ app.post('/comments', (req, res) => {
 app.get('/comments', (request, response) => {
     console.log(response.send(comments))
 })
+// put metodas ; modifikuoti user duomenis su dinaminiu id numeriu
+app.get('/users', (req, res) => res.send(users))
+app.put('/user/:id', (req, res) => {
+    const userIndex = users.findIndex(user => user.id === Number(req.params.id));
+    if (userIndex > -1) {
+        const oldUserInfo = users[userIndex]
+        //  const a ={name = "John", age: 16}
+        //  const b = {lastName = "Smith", name:"Larry"}
+        // const c  = {...a, ...b} - gaus b savybes
+        // const d = {...b, ...a} - gaus a savybes
+        const updatedUserInfo = { ...oldUserInfo, ...req.body }
+        users[userIndex] = updatedUserInfo
+        res.send(users)
+    } else 
+    { res.send('could not find the user') }
+})
 
+app.listen(port, () => {
+    console.log(`Serveris paleistas su node. Laukia užklausų`);
+});
