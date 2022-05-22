@@ -97,3 +97,16 @@ app.post('/users', (req, res) => {
 app.get('/users', (request, response) => {
     console.log(response.send(users))
 })
+
+app.post('/comments', (req, res) => {
+    const newComment = req.body
+
+    comments.push({ ...newComment, commentId: new Date().getTime() })
+    return res.send("irasytas naujas komentaras")
+}
+)
+
+app.get('/comments', (request, response) => {
+    console.log(response.send(comments))
+})
+
