@@ -1,4 +1,5 @@
 const express = require('express');
+const res = require('express/lib/response');
 const app = express();
 const port = 3000
 
@@ -26,7 +27,7 @@ let users = [{
 ]
 
 
-const comments = [{
+let comments = [{
     commentId: 1,
     userId: 1,
     subject: "js",
@@ -65,73 +66,57 @@ const comments = [{
 
 ]
 
+function serverStart() {
+    console.log("Server started...");
+}
 
-app.get('/user/:id', (req, res) => {
-    const user = users.find(user => user.userId === Number(req.params.id));
-    if (!user) {
-        res.send({});
-    } else {
-        const userComments = comments.filter(comment => comment.userId === user.userId);
-        res.send({ ...user, comments: userComments });
-    }
-})
+app.listen(port, serverStart);
 
 
+function getUsers(request, response) {
+    response.send(users);
+}
+app.get("/users", getUsers);
 
 
-app.post('/users', (req, res) => {
-    const newUser = req.body
-    if (users.find(user => user.email === newUser.email || user.id === newUser.id)) {
-        return res.send("user su tokiais pata duomenis jau yra")
+function getComments(request, response) {
+    response.send(comments);
+}
+app.get("/comments", getComments);
+
+
+//   app.get("*", callCallback);
+
+function createUser(request, response) {
+    const newUser = request.body;
+    users.push({ ...newUser, id: new Date().getTime() });
+    response.send(users);
+}
+app.post("/user", createUser);
+
+function updateUser(request, response) {
+    const updatingUserId = Number(request.params.userId)
+    const oldUserIndex = users.findIndex(user => user.id === updatingUserId)
+    const newUserInfo = request.body
+    if (oldUserIndex > -1) {
+        users[oldUserIndex] = { ...users[oldUserIndex], ...newUserInfo }
+        response.send(users)
+
     }
     else {
-        users.push({ ...newUser, id: new Date().getTime() })
-        return res.send("naujas useris pridetas")
+        response.send("tokio vartotojo nera");
     }
-
-})
-
-
-app.get('/users', (request, response) => {
-    console.log(response.send(users))
-})
-
-app.post('/comments', (req, res) => {
-    const newComment = req.body
-
-    comments.push({ ...newComment, commentId: new Date().getTime() })
-    return res.send("irasytas naujas komentaras")
 }
-)
-
-app.get('/comments', (request, response) => {
-    console.log(response.send(comments))
-})
-// put metodas ; modifikuoti user duomenis su dinaminiu id numeriu
-app.get('/users', (req, res) => res.send(users))
-app.put('/user/:id', (req, res) => {
-    const userIndex = users.findIndex(user => user.id === Number(req.params.id));
-    if (userIndex > -1) {
-        const oldUserInfo = users[userIndex]
-        //  const a ={name = "John", age: 16}
-        //  const b = {lastName = "Smith", name:"Larry"}
-        // const c  = {...a, ...b} - gaus b savybes
-        // const d = {...b, ...a} - gaus a savybes
-        const updatedUserInfo = { ...oldUserInfo, ...req.body }
-        users[userIndex] = updatedUserInfo
-        res.send(users)
-    } else 
-    { res.send('could not find the user') }
-})
-
-// DELETE metodui reikia, kad users taptu LET vietoj const
-app.delete('/user/:id', (req, res) => {
-    users = users.filter(user => user.id !== Number(req.params.id));
-    // cia filter funkcija veikia taip, kad palik tik tuos, kurie nelygu tam dinaminiam numeriui
-    res.send(users)
-    })
 
 
-app.listen(port, () => {
-    console.log(`Serveris paleistas su node. Laukia užklausų`);
-});
+app.put("/user/:userId", updateUser)
+
+function deleteUserAndUserComments (request, response) {
+    users = users.filter(user => user.id !== Number(request.params.userId))
+   comments = comments.filter(comment =>comment.userId !==Number(request.params.userId))
+   
+    response.send({users, comments})
+}
+
+app.delete("/user/:userId", deleteUserAndUserComments)
+
